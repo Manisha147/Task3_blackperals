@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Content with JavaScript</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .slider img {
+            width: 100%;
+            height: auto;
+        }
+
+        .accordion .card-header {
+            cursor: pointer;
+        }
+
+        .tabs-content {
+            margin-top: 20px;
+        }
+
+        .btn-custom {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .btn-custom:hover {
+            background-color: #495057;
+        }
+
+        .no-js-message {
+            display: none;
+            background-color: #ffcc00;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .show {
+            display: block;
+        }
+    </style>
+    <noscript>
+        <style>
+            .no-js-message {
+                display: block;
+            }
+        </style>
+    </noscript>
+</head>
+<body>
+    <div class="no-js-message">
+        <p>JavaScript is disabled in your browser. Some features may not be available.</p>
+    </div>
+
+    <div class="container mt-4">
+        <!-- Image Slider -->
+        <div class="slider">
+            <img src="https://via.placeholder.com/800x400" id="slider-img" alt="Slider Image">
+            <button class="btn btn-custom mt-2" onclick="prevImage()">Previous</button>
+            <button class="btn btn-custom mt-2" onclick="nextImage()">Next</button>
+        </div>
+
+        <!-- Accordion -->
+        <div class="accordion mt-4" id="accordionExample">
+            <div class="card">
+                <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne">
+                    Section 1
+                </div>
+                <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                    <div class="card-body">
+                        Content for section 1.
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="headingTwo" data-toggle="collapse" data-target="#collapseTwo">
+                    Section 2
+                </div>
+                <div id="collapseTwo" class="collapse" data-parent="#accordionExample">
+                    <div class="card-body">
+                        Content for section 2.
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="headingThree" data-toggle="collapse" data-target="#collapseThree">
+                    Section 3
+                </div>
+                <div id="collapseThree" class="collapse" data-parent="#accordionExample">
+                    <div class="card-body">
+                        Content for section 3.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab">Contact</a>
+            </li>
+        </ul>
+        <div class="tab-content tabs-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel">Home content goes here.</div>
+            <div class="tab-pane fade" id="profile" role="tabpanel">Profile content goes here.</div>
+            <div class="tab-pane fade" id="contact" role="tabpanel">Contact content goes here.</div>
+        </div>
+
+        <!-- Form with Validation -->
+        <div class="mt-4">
+            <h2>Contact Us</h2>
+            <form id="contactForm" onsubmit="return validateForm()">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                    <small id="nameError" class="form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                    <small id="emailError" class="form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea class="form-control" id="message" rows="3" placeholder="Enter your message"></textarea>
+                    <small id="messageError" class="form-text text-danger"></small>
+                </div>
+                <button type="submit" class="btn btn-custom">Submit</button>
+            </form>
+        </div>
+
+        <!-- Dynamic Content from API -->
+        <div class="mt-4" id="apiData">
+            <h2>API Data</h2>
+            <button class="btn btn-custom" onclick="fetchData()">Load Data</button>
+            <div id="dataContainer" class="mt-3"></div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Image Slider JavaScript
+        const images = [
+            'https://via.placeholder.com/800x400?text=Image+1',
+            'https://via.placeholder.com/800x400?text=Image+2',
+            'https://via.placeholder.com/800x400?text=Image+3'
+        ];
+        let currentImageIndex = 0;
+
+        function showImage(index) {
+            const imgElement = document.getElementById('slider-img');
+            imgElement.src = images[index];
+        }
+
+        function prevImage() {
+            currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : images.length - 1;
+            showImage(currentImageIndex);
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex < images.length - 1) ? currentImageIndex + 1 : 0;
+            showImage(currentImageIndex);
+        }
+
+        // Form Validation JavaScript
+        function validateForm() {
+            let valid = true;
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            document.getElementById('nameError').innerText = '';
+            document.getElementById('emailError').innerText = '';
+            document.getElementById('messageError').innerText = '';
+
+            if (name === '') {
+                document.getElementById('nameError').innerText = 'Name is required';
+                valid = false;
+            }
+
+            if (email === '') {
+                document.getElementById('emailError').innerText = 'Email is required';
+                valid = false;
+            } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+                document.getElementById('emailError').innerText = 'Invalid email format';
+                valid = false;
+            }
+
+            if (message === '') {
+                document.getElementById('messageError').innerText = 'Message is required';
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        // Fetch Data from API
+        function fetchData() {
+            fetch('https://jsonplaceholder.typicode.com/posts')
+                .then(response => response.json())
+                .then(data => {
+                    const dataContainer = document.getElementById('dataContainer');
+                    dataContainer.innerHTML = '';
+                    data.slice(0, 5).forEach(post => {
+                        const postElement = document.createElement('div');
+                        postElement.classList.add('card', 'mb-3');
+                        postElement.innerHTML = `
+                            <div class="card-body">
+                                <h5 c
